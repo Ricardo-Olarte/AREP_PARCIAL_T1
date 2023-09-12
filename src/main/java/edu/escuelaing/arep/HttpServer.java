@@ -123,7 +123,14 @@ public class HttpServer {
     private static String classes(String class_name) {
 
         //LinkedList<String, String> clase = new LinkedList<>();
-        //
+        //String methods = "";
+        //String[] Objetcs;
+
+        try {
+            Class<?> clase = Class.forName(class_name);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         return "***";
     }
 
