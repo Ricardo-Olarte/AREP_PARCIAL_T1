@@ -1,7 +1,13 @@
 package edu.escuelaing.arep;
 
+import com.oracle.xmlns.internal.webservices.jaxws_databinding.JavaWsdlMappingType;
+
+import java.lang.reflect.Method;
 import java.net.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Luis Benavides (Modify by Ricardo Olarte)
@@ -35,10 +41,12 @@ public class HttpServer {
                 break;
             }
             String[] strings = inputLine.split(" ");
+            String command = strings[1];
             URI uri = null;
 
+            while(in.ready()) {
                 if (inputLine.contains("Class")) {
-
+                    classes(command.replace("/consulta?comando=",""));
                 } else if (inputLine.contains("invoke")) {
 
                 } else if (inputLine.contains("unaryInvoke")) {
@@ -98,14 +106,13 @@ public class HttpServer {
                         + "</script>\n"
                         + "</body>\n"
                         + "</html>\n";
-
                 out.println(outputLine);
                 out.close();
-                in.close();
-
-            clientSocket.close();
-            serverSocket.close();
+            }
         }
+        in.close();
+        clientSocket.close();
+        serverSocket.close();
     }
 
     /**
@@ -113,7 +120,10 @@ public class HttpServer {
      * @param class_name
      * @return
      */
-    private String classes (String class_name) {
+    private static String classes(String class_name) {
+
+        //LinkedList<String, String> clase = new LinkedList<>();
+        //
         return "***";
     }
 
