@@ -1,9 +1,7 @@
 package edu.escuelaing.arep;
 
-import java.lang.reflect.Method;
 import java.net.*;
 import java.io.*;
-import java.util.List;
 
 /**
  * @author Luis Benavides (Modify by Ricardo Olarte)
@@ -36,91 +34,101 @@ public class HttpServer {
             if (!in.ready()) {
                 break;
             }
-            if(inputLine.contains("Class")){
+            String[] strings = inputLine.split(" ");
+            URI uri = null;
 
-            } else if (inputLine.contains("invoke")) {
+                if (inputLine.contains("Class")) {
 
-            } else if (inputLine.contains("unaryInvoke")) {
+                } else if (inputLine.contains("invoke")) {
 
-            }else{
+                } else if (inputLine.contains("unaryInvoke")) {
 
-            }
+                } else {
 
-            outputLine = "HTTP/1.1 200 OK\r\n"
-                    + "Content-Type: text/html\r\n"
-                    + "\r\n"
-                    + "<!DOCTYPE html>\n"
-                    + "<html>\n"
-                    + "<head>\n"
-                    + "<meta charset=\"UTF-8\">\n"
-                    + "<title>Reflective ChatGPT</title>\n"
-                    + "</head>\n"
-                    + "<body>\n"
-                    + "<h1>Parcial Arep Corte1</h1>\n"
-                    + "<h1>Form with GET</h1>\n"
-                    + "<form action=\"/hello\">\n"
-                    + "<label for=\"name\">Name:</label><br>\n"
-                    + "<input type=\"text\" id=\"name\" name=\"name\" value=\"John\"><br><br>\n"
-                    + "<input type=\"button\" value=\"Submit\" onclick=\"loadGetMsg()\">\n"
-                    + "</form>\n"
-                    + "<div id=\"getrespmsg\"></div>\n"
-                    + "\n"
-                    + "<script>\n"
-                    + "function loadGetMsg() {\n"
-                    +           "let nameVar = document.getElementById(\"name\").value;\n"
-                    +           "const xhttp = new XMLHttpRequest();\n"
-                    +           "xhttp.onload = function() {\n"
-                    +           "document.getElementById(\"getrespmsg\").innerHTML =\n"
-                    +           "this.responseText;\n"
-                    +           "}\n"
-                    +           "xhttp.open(\"GET\", \"/hello?name=\"+nameVar);\n"
-                    + "xhttp.send();\n"
-                    + "}\n"
-                    + "</script>\n"
-                    + "<h1>Form with POST</h1>\n"
-                    + "<form action=\"/hellopost\">\n"
-                    + "<label for=\"postname\">Name:</label><br>\n"
-                    + "<input type=\"text\" id=\"postname\" name=\"name\" value=\"John\"><br><br>\n"
-                    + "<input type=\"button\" value=\"Submit\" onclick=\"loadPostMsg(postname)\">\n"
-                    + "</form>"
-                    + "\n"
-                    + "<div id=\"postrespmsg\"></div>\n"
-                    + "\n"
-                    + "<script>\n"
-                    + "function loadPostMsg(name){\n"
-                    + "let url = \"/hellopost?name=\" + name.value;\n"
-                    + "\n"
-                    + "fetch (url, {method: 'POST'})\n"
-                    + ".then(x => x.text())\n"
-                    + ".then(y => document.getElementById(\"postrespmsg\").innerHTML = y);\n"
-                    + "}\n"
-                    + "</script>\n"
-                    + "</body>\n"
-                    + "</html>\n";
+                }
 
-            out.println(outputLine);
-            out.close();
+                outputLine = "HTTP/1.1 200 OK\r\n"
+                        + "Content-Type: text/html\r\n"
+                        + "\r\n"
+                        + "<!DOCTYPE html>\n"
+                        + "<html>\n"
+                        + "<head>\n"
+                        + "<meta charset=\"UTF-8\">\n"
+                        + "<title>Reflective ChatGPT</title>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "<h1>Parcial Arep Corte1</h1>\n"
+                        + "<h1>Form with GET</h1>\n"
+                        + "<form action=\"/hello\">\n"
+                        + "<label for=\"name\">Name:</label><br>\n"
+                        + "<input type=\"text\" id=\"name\" name=\"name\" value=\"John\"><br><br>\n"
+                        + "<input type=\"button\" value=\"Submit\" onclick=\"loadGetMsg()\">\n"
+                        + "</form>\n"
+                        + "<div id=\"getrespmsg\"></div>\n"
+                        + "\n"
+                        + "<script>\n"
+                        + "function loadGetMsg() {\n"
+                        + "let nameVar = document.getElementById(\"name\").value;\n"
+                        + "const xhttp = new XMLHttpRequest();\n"
+                        + "xhttp.onload = function() {\n"
+                        + "document.getElementById(\"getrespmsg\").innerHTML =\n"
+                        + "this.responseText;\n"
+                        + "}\n"
+                        + "xhttp.open(\"GET\", \"/consulta?comando=\"+nameVar);\n"
+                        + "xhttp.send();\n"
+                        + "}\n"
+                        + "</script>\n"
+                        + "<h1>Form with POST</h1>\n"
+                        + "<form action=\"/hellopost\">\n"
+                        + "<label for=\"postname\">Name:</label><br>\n"
+                        + "<input type=\"text\" id=\"postname\" name=\"name\" value=\"John\"><br><br>\n"
+                        + "<input type=\"button\" value=\"Submit\" onclick=\"loadPostMsg(postname)\">\n"
+                        + "</form>"
+                        + "\n"
+                        + "<div id=\"postrespmsg\"></div>\n"
+                        + "\n"
+                        + "<script>\n"
+                        + "function loadPostMsg(name){\n"
+                        + "let url = \"/hellopost?name=\" + name.value;\n"
+                        + "\n"
+                        + "fetch (url, {method: 'POST'})\n"
+                        + ".then(x => x.text())\n"
+                        + ".then(y => document.getElementById(\"postrespmsg\").innerHTML = y);\n"
+                        + "}\n"
+                        + "</script>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+                out.println(outputLine);
+                out.close();
+                in.close();
+
+            clientSocket.close();
+            serverSocket.close();
         }
-        in.close();
-        clientSocket.close();
-        serverSocket.close();
     }
 
-    private String classes(){
+    /**
+     * Retorna una lista de campos declarados y metodos declarados
+     * @param class_name
+     * @return
+     */
+    private String classes (String class_name) {
         return "***";
     }
 
-    private String invoke(String class_name, String method_name){
+    private String invoke (String class_name, String method_name){
         return "###";
     }
 
-    private String unaryInvoke(String class_name, String method, String param, String value){
+    private String unaryInvoke (String class_name, String method, String param, String value){
         return "---";
     }
 
-    private String  binaryInvoke(){
+    private String binaryInvoke () {
         return "///";
     }
+
 }
 
 /*
